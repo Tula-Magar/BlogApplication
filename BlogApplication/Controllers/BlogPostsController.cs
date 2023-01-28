@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogApplication.Data;
 using BlogApplication.Models;
+using BlogApplication.AWS;
+using Amazon.S3;
+using Amazon.S3.Model;
+using System;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BlogApplication.Controllers
 {
@@ -63,9 +68,23 @@ namespace BlogApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,DateCreated,DateModified,Author,CategoryId")] BlogPost blogPost)
+        public async Task<IActionResult> Create([Bind("Id,Title,Content,DateCreated,DateModified,Author,CategoryId")] BlogPost blogPost, [FromForm] IFormFile file)
         {
-        
+            string uniqueId = Guid.NewGuid().ToString();
+
+            IAmazonS3 client = new AmazonS3Client("AKIAU5Q3JA63PYJ7Q7VV", "Ue68OyzyqLL2ZULWicl1Nz9CIM9tHQefWa10tlw3", Amazon.RegionEndpoint.USEast1);
+            PutObjectRequest request = new PutObjectRequest
+            {
+                BucketName = "blog-application",
+                
+                 Key = "Image" + "/" + uniqueId + "_" + file.Name,
+
+                InputStream = file.OpenReadStream(),
+                ContentType = file.ContentType
+            };
+            var response = await client.PutObjectAsync(request);
+            
+
             if (ModelState.IsValid && blogPost.CategoryId != -1)
             {
                 _context.Add(blogPost);
