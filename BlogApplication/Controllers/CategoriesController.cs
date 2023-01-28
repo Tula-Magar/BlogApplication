@@ -10,103 +10,85 @@ using BlogApplication.Models;
 
 namespace BlogApplication.Controllers
 {
-    public class BlogPostsController : Controller
+    public class CategoriesController : Controller
     {
         private readonly AppDbContext _context;
 
-        public BlogPostsController(AppDbContext context)
+        public CategoriesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: BlogPosts
+        // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var blogPosts = _context.BlogPosts.Include(b => b.Category);
-            return View(await blogPosts.ToListAsync());
-           
+              return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: BlogPosts/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.BlogPosts == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPosts.Include(b => b.Category)
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (blogPost == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(blogPost);
+            return View(category);
         }
 
-        // GET: BlogPosts/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
-            IEnumerable<SelectListItem> categories = _context.Categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            });
-
-            ViewBag.Categories = categories;
             return View();
         }
 
-        // POST: BlogPosts/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Content,DateCreated,DateModified,Author,CategoryId")] BlogPost blogPost)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
-        
-            if (ModelState.IsValid && blogPost.CategoryId != -1)
+            if (ModelState.IsValid)
             {
-                _context.Add(blogPost);
+                _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(blogPost);
+            return View(category);
         }
 
-        // GET: BlogPosts/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.BlogPosts == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            IEnumerable<SelectListItem> categories = _context.Categories.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            });
-
-            ViewBag.Categories = categories;
-
-            var blogPost = await _context.BlogPosts.FindAsync(id);
-            if (blogPost == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(blogPost);
+            return View(category);
         }
 
-        // POST: BlogPosts/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content,DateCreated,DateModified,Author,CategoryId")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
-            if (id != blogPost.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -115,12 +97,12 @@ namespace BlogApplication.Controllers
             {
                 try
                 {
-                    _context.Update(blogPost);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BlogPostExists(blogPost.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -131,49 +113,49 @@ namespace BlogApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(blogPost);
+            return View(category);
         }
 
-        // GET: BlogPosts/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.BlogPosts == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPosts.Include(b => b.Category)
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (blogPost == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(blogPost);
+            return View(category);
         }
 
-        // POST: BlogPosts/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.BlogPosts == null)
+            if (_context.Categories == null)
             {
-                return Problem("Entity set 'AppDbContext.BlogPosts'  is null.");
+                return Problem("Entity set 'AppDbContext.Categories'  is null.");
             }
-            var blogPost = await _context.BlogPosts.FindAsync(id);
-            if (blogPost != null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category != null)
             {
-                _context.BlogPosts.Remove(blogPost);
+                _context.Categories.Remove(category);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BlogPostExists(int id)
+        private bool CategoryExists(int id)
         {
-          return _context.BlogPosts.Any(e => e.Id == id);
+          return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

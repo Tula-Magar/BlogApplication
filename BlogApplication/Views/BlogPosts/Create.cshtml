@@ -8,7 +8,7 @@
 
 <h4>BlogPost</h4>
 <hr />
-<div class="row">
+<div class="row mt-5">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -17,9 +17,9 @@
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group col-8">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <textarea asp-for="Content" class="form-control summernote"> </textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,6 +38,15 @@
                 <span asp-validation-for="Author" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>            
+                 <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control">
+                    <option value="-1" selected>Select Category</option>
+                </select>
+                     
+                   
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -48,6 +57,19 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
+@section Scripts 
+{
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+
+    <script>
+       $(document).ready(function() {
+
+           $('.summernote').summernote({
+                  tabsize: 2,
+                  height: 100
+           });
+
+       });
+    </script>
 }

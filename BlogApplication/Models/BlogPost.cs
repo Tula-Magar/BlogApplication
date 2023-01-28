@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlogApplication.Models
 {
@@ -22,7 +23,13 @@ namespace BlogApplication.Models
         public DateTime DateModified { get; set; }
 
         public string Author { get; set; }
-        
-        
+
+        [DisplayName("Category Type")]
+        public int CategoryId { get; set; }
+
+        [ForeignKey("CategoryId")]
+        public virtual Category? Category { get; set; }
+
+
     }
 }
