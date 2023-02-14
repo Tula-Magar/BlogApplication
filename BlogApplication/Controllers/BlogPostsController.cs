@@ -72,7 +72,7 @@ namespace BlogApplication.Controllers
         {
             string uniqueId = Guid.NewGuid().ToString();
 
-            IAmazonS3 client = new AmazonS3Client("AKIAU5Q3JA63PYJ7Q7VV", "Ue68OyzyqLL2ZULWicl1Nz9CIM9tHQefWa10tlw3", Amazon.RegionEndpoint.USEast1);
+            IAmazonS3 client = new AmazonS3Client(" ", " ", Amazon.RegionEndpoint.USEast1);
             PutObjectRequest request = new PutObjectRequest
             {
                 BucketName = "blog-application",
